@@ -5,3 +5,11 @@ export const validateRegisterData = (data) => {
         throw new Error("All fields are required");
     } 
 };
+
+export const validateLoginData = (data) => {
+    const { email, password } = data;
+
+    if (!email || !password) {
+        throw new Error("Email and password are required");
+    }
+};

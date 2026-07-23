@@ -1,5 +1,10 @@
 import User from "../models/user.model.js";
-import { validateRegisterData } from "../validations/auth.validation.js";
+
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+import { validateRegisterData,validateLoginData } from "../validations/auth.validation.js";
+import Wallet from "../models/wallet.model.js";
 
 export const registerUserService = async (userData) => {
     validateRegisterData(userData);
@@ -25,7 +30,44 @@ export const registerUserService = async (userData) => {
         }
     }
 
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
+    userData.password = hashedPassword;
+
     const user = await User.create(userData);
+     await Wallet.create(
+        { user: user._id }
+    );
+
+    const userObject = user.toObject();
+    delete userObject.password;
+
+    return userObject;
 
     return user;
+};
+
+export const loginUserService = async (loginData) => {
+    validateLoginData(loginData);
+    const { email, password } = loginData;
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw new Error("Invalid email or password");
+    }
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+        throw new Error("Invalid email or password");
+    }
+
+    const token = jwt.sign(
+        { id: user._id,}, 
+        process.env.JWT_SECRET, 
+        { expiresIn: "1h" });
+
+    const userObject = user.toObject();
+    delete userObject.password;
+
+    return {
+        user: userObject,
+        token
+    };
 };
