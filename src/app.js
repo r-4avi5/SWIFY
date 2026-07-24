@@ -6,6 +6,8 @@ import cookieParser from "cookie-parser";
 import healthRoutes from "./routes/health.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import walletRoutes from "./routes/wallet.route.js";
+import paymentIdentityRoutes from "./routes/paymentIdentity.routes.js";
 
 
 const app = express();
@@ -21,6 +23,8 @@ app.use(morgan("dev"));
 app.use("/health", healthRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/wallet", walletRoutes);
+app.use("/api/payment-identity", paymentIdentityRoutes);
 
 
 export default app;

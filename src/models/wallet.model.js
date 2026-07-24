@@ -21,6 +21,22 @@ const walletSchema = new mongoose.Schema(
         enum: ["active", "blocked", "suspended"],
         default: "active"
     },
+    dailyTransactionLimit: {
+        type: Number,
+        default: 100000,
+    },
+    dailyTransferredAmount: {
+        type: Number,
+        default: 0,
+    },
+    isFrozen: {
+        type: Boolean,
+        default: false,
+    },
+    lastTransactionAt: {
+        type: Date,
+        default: null,
+    },    
 },
     { timestamps: true,}
 

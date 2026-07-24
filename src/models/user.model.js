@@ -35,6 +35,12 @@ const userSchema = new mongoose.Schema(
         lowercase: true,
         trim: true,
     },
+        payAddress: {
+        type: String,
+        unique: true,
+        required: true,
+        lowercase: true,
+    },
 
         avatar: {
         type: String,
@@ -47,7 +53,7 @@ const userSchema = new mongoose.Schema(
     },
   },
 
-      { timeStamps : true,}
+      { timestamps : true,}
 );
 
     const User = mongoose.model("User", userSchema);
