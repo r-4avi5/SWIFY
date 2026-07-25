@@ -35,13 +35,12 @@ const userSchema = new mongoose.Schema(
         lowercase: true,
         trim: true,
     },
-        payAddress: {
-        type: String,
-        unique: true,
-        required: true,
-        lowercase: true,
-    },
-
+        displayName:{
+            type: String,
+            required: true,
+            trim: true,
+            maxlength: true,
+        },
         avatar: {
         type: String,
         default: "",
