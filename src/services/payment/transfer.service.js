@@ -62,10 +62,21 @@ export const transferMoney = async (senderId, transferData) => {
             },
             session
         )
+        await session.commitTransaction();
+        return {
+            success: true,
+            message: "payment successful",
+            reference,
+            amount,
+            receiver:{
+                fullName:receiver.fullName,
+                payAddress:receiver.payAddress,
+            },
+        };
     } catch (error) {
         await session.abortTransaction();
         throw error;
     } finally {
-        await session.endSession();
+        session.endSession();
     }
 }

@@ -26,3 +26,15 @@ export const creditWallet = async (wallet, amount, session) => {
     await wallet.save({ session });
     return wallet;
 }
+
+export const getWalletBalanceService = async(userId) =>{
+    const wallet = await Wallet.findOne({user: userId});
+     if (!wallet) {
+        throw new Error("Wallet not found for the user");
+    }
+    return {
+        balance: wallet.balance,
+        currency: wallet.currency,
+        status: wallet.status,
+    };
+};
