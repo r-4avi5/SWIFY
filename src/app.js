@@ -9,6 +9,8 @@ import userRoutes from "./routes/user.routes.js";
 import walletRoutes from "./routes/wallet.route.js";
 import paymentIdentityRoutes from "./routes/paymentIdentity.routes.js";
 import transactionRoutes from "./routes/transaction.routes.js";
+import kycRoutes from "./routes/kyc.routes.js";
+import transferRoutes from "./routes/transfer.routes.js";
 
 
 const app = express();
@@ -27,6 +29,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/wallet", walletRoutes);
 app.use("/api/payment-identity", paymentIdentityRoutes);
 app.use("/api/transactions",transactionRoutes);
+app.use("/api/kyc",kycRoutes);
+app.use("/api/transfer", transferRoutes);
 
 
 export default app;

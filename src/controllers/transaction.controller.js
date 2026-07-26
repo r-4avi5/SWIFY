@@ -38,4 +38,3 @@ export const getTransactionByReference = async(req,res) =>{
         });
     }
 };
-

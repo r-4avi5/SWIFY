@@ -35,6 +35,18 @@ const userSchema = new mongoose.Schema(
         lowercase: true,
         trim: true,
     },
+        payAddress: {
+        type: String,
+        unique: true,
+        sparse: true,
+        default: null,
+        lowercase: true,
+        trim: true,
+    },
+        qrCodeImage: {
+        type: String,
+        default: null,
+    },
         displayName:{
             type: String,
             required: true,
@@ -45,11 +57,6 @@ const userSchema = new mongoose.Schema(
         type: String,
         default: "",
   },
-       KycStatus: {
-        type: String,
-        enum: ["pending", "verified", "rejected"],
-        default: "pending",
-    },
   },
 
       { timestamps : true,}

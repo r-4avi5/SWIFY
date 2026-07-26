@@ -80,3 +80,98 @@ export const transferMoney = async (senderId, transferData) => {
         session.endSession();
     }
 }
+
+export const transferByQRService = async (
+    senderId,
+    data
+) => {
+
+    const {
+        qrData,
+        amount,
+        note,
+        idempotencyKey,
+    } = data;
+
+    if (!qrData) {
+        throw new Error("QR data is required.");
+    }
+
+    let payload;
+
+    try {
+
+        payload = JSON.parse(qrData);
+
+    } catch {
+
+        throw new Error("Invalid QR Code.");
+
+    }
+
+    if (!payload.payAddress) {
+
+        throw new Error("Invalid QR payload.");
+
+    }
+
+    return await transferService(
+        senderId,
+        {
+            identifier: payload.payAddress,
+            amount,
+            note,
+            idempotencyKey,
+        }
+    );
+
+};
+
+export const scanQRService = async (data) => {
+
+    const { qrData } = data;
+    const kyc = await KYC.findOne({ user: receiver._id });
+
+    if (!qrData) {
+        throw new Error("QR data is required.");
+    }
+
+    let payload;
+
+    try {
+
+        payload = JSON.parse(qrData);
+
+    } catch {
+
+        throw new Error("Invalid QR Code.");
+
+    }
+
+    if (!payload.payAddress) {
+        throw new Error("Invalid QR payload.");
+    }
+
+    const receiver = await User.findOne({
+        payAddress: payload.payAddress,
+    });
+
+    if (!receiver) {
+        throw new Error("Receiver not found.");
+    }
+
+    if (!kyc || kyc.status !== "VERIFIED") {
+    throw new Error("Receiver is not eligible to receive payments.");
+    }
+
+    return {
+
+        displayName: receiver.displayName,
+
+        payAddress: receiver.payAddress,
+
+        avatar: receiver.avatar,
+
+    };
+
+};

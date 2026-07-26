@@ -44,6 +44,28 @@ const kycSchema = new mongoose.Schema({
                 "UNDER_REVIEW",
                 "VERIFIED",
                 "REJECTED",
-        ]
+        ],
+        default:"PENDING",
+    }, 
+    rejectionReason:{
+        type:String,
+        default:"",
+    },
+    verifiedAt:{
+        type:Date,
+        default:null,
+    },
+    verifiedBy:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        default:null,
+    },
+},
+    {
+        timestamps:true,
     }
-})
+);
+
+const KYC = mongoose.model("KYC",kycSchema);
+
+export default KYC;
