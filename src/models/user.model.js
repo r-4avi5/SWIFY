@@ -56,8 +56,24 @@ const userSchema = new mongoose.Schema(
         avatar: {
         type: String,
         default: "",
-  },
-  },
+        },
+        mpin:{
+            type:String,
+            default:null,
+        },
+        isMpinSet:{
+            type:Boolean,
+            default:false
+        },
+        failedMpinAttempts:{
+            type:Number,
+            default:0
+        },
+        mpinLockedUntil:{
+            type:Date,
+            default:null,
+        },
+        },
 
       { timestamps : true,}
 );
