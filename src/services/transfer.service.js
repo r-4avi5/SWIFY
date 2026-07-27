@@ -1,17 +1,23 @@
 import mongoose from "mongoose";
 
-import User from "../../models/user.model.js";
-import Wallet from "../../models/wallet.model.js";
-import Transaction from "../../models/transaction.model.js";
+import User from "../models/user.model.js";
+import Wallet from "../models/wallet.model.js";
+import Transaction from "../models/transaction.model.js";
 
-import {resolveUser} from "../paymentIdentity.service.js";
-import {validateTransferData} from "../../validations/transfer.validation.js";
-import {validateTransferBusinessRules} from "../../validations/paymentBusiness.validation.js";
-import {generateReference} from "../../utils/generateReference.js";
-import {getWalletbyUserId,debitWallet,creditWallet} from "../wallet.service.js";
-import { createTransaction } from "../transaction.service.js";
+import {resolveUser} from "./paymentIdentity.service.js";
+import {validateTransferData} from "../validations/payment.validation.js";
+import {validateTransferBusinessRules} from "../validations/paymentBusiness.validation.js";
+import {generateReference} from "../utils/generateReference.js";
+import {getWalletbyUserId,debitWallet,creditWallet} from "./wallet.service.js";
+import { createTransaction } from "./transaction.service.js";
+import { verifyPaymentAuthorisation,deletePaymentAuthorisation } from "./paymentAuthorisation.service.js";
 
-export const transferMoney = async (senderId, transferData) => {
+export const transferMoneyService = async (senderId, transferData,paymentToken) => {
+
+    if (!paymentToken) {
+    throw new Error("Payment authorization token is required.");
+}
+    const authorisation = await verifyPaymentAuthorisation(senderId,paymentToken);
 
     validateTransferData(transferData);
 
@@ -63,6 +69,7 @@ export const transferMoney = async (senderId, transferData) => {
             session
         )
         await session.commitTransaction();
+        await deletePaymentAuthorisation(authorisation);
         return {
             success: true,
             message: "payment successful",

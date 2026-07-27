@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true,
-            maxlength: true,
+            maxlength: 12,
         },
         avatar: {
         type: String,

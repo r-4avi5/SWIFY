@@ -1,14 +1,15 @@
 import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import { validateCreateMpin,validateVerifyMpin,validateChangeMpin } from "../validations/mpin.validation.js";
+import { generatePaymentAuthorisation } from "./paymentAuthorisation.service.js";
 
 export const createMpinService = async (userId,data) => {
-    ValidateCreateMpin(data);
+    validateCreateMpin(data);
 
     const {mpin} = data;
     const user = await User.findById(userId);
     if(!user) {
-        throw new Error("USer not found.");
+        throw new Error("User not found.");
     }
     if(user.isMpinSet){
         throw new Error("MPIN already set.");
@@ -51,7 +52,7 @@ const verifyStoredMpin = async (user,enteredMpin) => {
          }
          await user.save();
 
-         throw new error ("Incorrect Mpin");
+         throw new Error ("Incorrect Mpin");
     }
     user.failedMpinAttempts = 0;
     user.mpinLockedUntil = null;
@@ -66,9 +67,12 @@ export const verifyMpinService = async (userId,data) => {
     const user = await User.findById(userId);
 
     await verifyStoredMpin(user,mpin);
+    const authorisation = await generatePaymentAuthorisation(userId);
     
     return {
-        message:"MPIN verified successfully."
+        message:"MPIN verified successfully.",
+        paymentToken:authorisation.paymentToken,
+        expiresAt:authorisation.expiresAt,
     };
 };
 
@@ -76,6 +80,7 @@ export const changeMpinService = async (userId,data) => {
     validateChangeMpin(data);
 
     const {oldMpin, newMpin} = data;
+    const user = await User.findById(userId);
     await verifyStoredMpin(user,oldMpin);
 
     const hashedNewMpin = await bcrypt.hash(newMpin,10);

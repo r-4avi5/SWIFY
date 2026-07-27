@@ -1,5 +1,5 @@
 import {
-    transferService,
+    transferMoneyService,
     transferByQRService,
     scanQRService
 } from "../services/transfer.service.js";
@@ -7,10 +7,11 @@ import {
 export const transferMoney = async (req, res) => {
 
     try {
-
+        const paymentToken = req.headers["x-payment-authorisation"]
         const result = await transferService(
             req.user._id,
-            req.body
+            req.body,
+            paymentToken
         );
 
         return res.status(200).json({

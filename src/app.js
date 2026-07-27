@@ -11,6 +11,7 @@ import paymentIdentityRoutes from "./routes/paymentIdentity.routes.js";
 import transactionRoutes from "./routes/transaction.routes.js";
 import kycRoutes from "./routes/kyc.routes.js";
 import transferRoutes from "./routes/transfer.routes.js";
+import mpinRoutes from "./routes/mpin.routes.js";
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use("/api/payment-identity", paymentIdentityRoutes);
 app.use("/api/transactions",transactionRoutes);
 app.use("/api/kyc",kycRoutes);
 app.use("/api/transfer", transferRoutes);
+app.use("/api/mpin",mpinRoutes);
 
 
 export default app;

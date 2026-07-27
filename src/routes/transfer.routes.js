@@ -1,6 +1,6 @@
 import express from "express";
 import { authenticateUser } from "../middleware/auth.middleware.js";
-import { transferMoney, transferByQR } from "../controllers/transfer.controller.js";
+import { transferMoney, transferByQR,scanQR } from "../controllers/transfer.controller.js";
 
 const router = express.Router();
 

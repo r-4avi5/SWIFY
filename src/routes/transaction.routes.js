@@ -1,6 +1,6 @@
 import express, { Router } from "express";
 import { authenticateUser } from "../middleware/auth.middleware.js";
-import {getTransactionHistory} from "../controllers/transaction.controller.js"
+import {getTransactionHistory,getTransactionByReference} from "../controllers/transaction.controller.js"
 
 const router = express.Router();
 
@@ -12,4 +12,4 @@ router.get(
     "/:reference",authenticateUser,getTransactionByReference
 );
 
-export default User;
+export default router;
