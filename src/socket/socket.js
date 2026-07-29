@@ -1,6 +1,5 @@
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
-import User from "../models/user.model.js";
 
 let io;
 
@@ -12,9 +11,9 @@ export const initialiseSocket = (server) => {
         },
     });
 
-    io.use(async(Socket,next) =>{
+    io.use(async(socket,next) =>{
         try{
-            const token = Socket.handshake.auth.token;
+            const token = socket.handshake.auth.token;
             if(!token) {
                return next(new Error("Authentication Token not found"));
             }
@@ -28,7 +27,7 @@ export const initialiseSocket = (server) => {
         }
     });
 
-    io.on("connection",(server) =>{
+    io.on("connection",(socket) =>{
         console.log(`User${socket.userId} connected`);
         socket.join(socket.userId);
 

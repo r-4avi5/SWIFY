@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import User from "../models/user.model.js";
 import { validateCreateMpin,validateVerifyMpin,validateChangeMpin } from "../validations/mpin.validation.js";
 import { generatePaymentAuthorisation } from "./paymentAuthorisation.service.js";
+import { sendMpinCreatedNotification,sendMpinChangedNotification } from "./notification.service.js";
 
 export const createMpinService = async (userId,data) => {
     validateCreateMpin(data);
@@ -19,6 +20,11 @@ export const createMpinService = async (userId,data) => {
     user.mpin = hashedMpin;
     user.isMpinSet = true;
     await user.save();
+
+    await sendMpinCreatedNotification({
+    receiver: user._id,
+    });
+
     return {
         message:"MPIN created successfully."
     };
@@ -86,6 +92,11 @@ export const changeMpinService = async (userId,data) => {
     const hashedNewMpin = await bcrypt.hash(newMpin,10);
     user.mpin = hashedNewMpin;
     await user.save();
+
+    await sendMpinChangedNotification({
+    receiver: user._id,
+    });
+
     return {
         message:"MPIN changed successfully."
     };

@@ -6,6 +6,7 @@ import KYC from "../models/kyc.model";
 
 import { generatePayAddress } from "./payAddress.service";
 import { generateQRCode } from "../utils/generateQRCode";
+import { sendKycApprovedNotification,sendKycRejectedNotification } from "./notification.service.js";
 
 export const reviewKYCService = async (userId, data) => {
 
@@ -87,6 +88,10 @@ export const approveKYCService = async(userId) =>{
 
         await session.commitTransaction();
 
+        await sendKycApprovedNotification({
+        receiver: kyc.user,
+        });
+
         return {
             user: {
                 id: user._id,
@@ -132,7 +137,12 @@ export const rejectKYCService = async(userId,reason) =>{
         kyc.status = "REJECTED";
         kyc.rejectionReason = reason;
         await kyc.save({ session });
-         await session.commitTransaction();
+        await session.commitTransaction();
+
+        await sendKycRejectedNotification({
+        receiver: kyc.user,
+        reason,
+        });
 
         return {
             message: "KYC rejected successfully.",

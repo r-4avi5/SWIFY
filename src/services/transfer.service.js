@@ -11,6 +11,7 @@ import {generateReference} from "../utils/generateReference.js";
 import {getWalletbyUserId,debitWallet,creditWallet} from "./wallet.service.js";
 import { createTransaction } from "./transaction.service.js";
 import { verifyPaymentAuthorisation,deletePaymentAuthorisation } from "./paymentAuthorisation.service.js";
+import { sendPaymentSentNotification,sendPaymentReceivedNotification } from "./notification.service.js";
 
 export const transferMoneyService = async (senderId, transferData,paymentToken) => {
 
@@ -70,6 +71,20 @@ export const transferMoneyService = async (senderId, transferData,paymentToken) 
         )
         await session.commitTransaction();
         await deletePaymentAuthorisation(authorisation);
+        
+        await sendPaymentSentNotification({
+        receiver: sender._id,
+        amount,
+        receiverName: receiver.displayName,
+        reference: transaction.reference,
+        });
+        await sendPaymentReceivedNotification({
+        receiver: receiver._id,
+        amount,
+        senderName: sender.displayName,
+        reference: transaction.reference,
+        });
+        
         return {
             success: true,
             message: "payment successful",

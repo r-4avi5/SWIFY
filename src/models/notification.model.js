@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { NOTIFICATION_TYPES } from "../constants/notification.types.js";
 
 const notificationSchema = new mongoose.Schema(
     {
@@ -23,16 +24,7 @@ const notificationSchema = new mongoose.Schema(
         type:{
             type:String,
             required:true,
-            enum:[
-                "PAYMENT_SENT",
-                "PAYMENT_RECEIVED",
-                "KYC_SUBMITTED",
-                "KYC_APPROVED",
-                "KYC_REJECTED",
-                "MPIN_CREATED",
-                "MPIN_CHANGED",
-                "SYSTEM",
-            ],
+            enum:Object.values(NOTIFICATION_TYPES)
         },
         metadata:{
             type:Object,

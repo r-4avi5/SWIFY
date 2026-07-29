@@ -1,5 +1,6 @@
 import KYC from "../models/kyc.model.js";
 import { validateKYCData } from "../validations/kyc.validation.js";
+import { sendKycSubmittedNotification } from "./notification.service.js";
 
 export const submitKYCService = async(userId,data) =>{
     validateKYCData(data);
@@ -28,6 +29,10 @@ export const submitKYCService = async(userId,data) =>{
 
     kyc.status = "UNDER_REVIEW";
     await kyc.save();
+
+    await sendKycSubmittedNotification({
+    receiver: userId,
+    });
 
     return kyc;
 };

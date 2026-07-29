@@ -12,6 +12,7 @@ import transactionRoutes from "./routes/transaction.routes.js";
 import kycRoutes from "./routes/kyc.routes.js";
 import transferRoutes from "./routes/transfer.routes.js";
 import mpinRoutes from "./routes/mpin.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
 
 
 const app = express();
@@ -33,6 +34,7 @@ app.use("/api/transactions",transactionRoutes);
 app.use("/api/kyc",kycRoutes);
 app.use("/api/transfer", transferRoutes);
 app.use("/api/mpin",mpinRoutes);
+app.use("/api/notifications",notificationRoutes);
 
 
 export default app;
