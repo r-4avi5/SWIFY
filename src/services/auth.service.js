@@ -32,8 +32,9 @@ export const registerUserService = async (userData) => {
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     userData.password = hashedPassword;
+    userData.payAddress = `${userData.swifyId}@swify`;
 
-    const user = await User.create(userData);
+     const user = await User.create(userData);
      await Wallet.create(
         { user: user._id }
     );

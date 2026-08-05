@@ -21,7 +21,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use(cors());
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+app.use(
+  cors({
+    origin: CLIENT_URL,
+    credentials: true,
+  })
+);
 app.use(helmet());
 app.use(morgan("dev"));
 
