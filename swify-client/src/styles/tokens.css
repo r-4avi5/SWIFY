@@ -1,0 +1,110 @@
+:root {
+  /* Color — "vault at night": deep ink navy panels, brass foil accent lifted
+     off a premium card, a signal green for money coming in, a soft coral
+     (never pure red) for money going out / errors. */
+  --ink: #0a0f1e;
+  --ink-2: #0d1326;
+  --panel: #121a33;
+  --panel-2: #19233f;
+  --panel-3: #212c4c;
+  --hairline: rgba(243, 241, 234, 0.09);
+  --hairline-strong: rgba(243, 241, 234, 0.16);
+
+  --brass: #cba35c;
+  --brass-soft: #e8cf95;
+  --brass-dim: #8a723f;
+
+  --signal: #2fd398;
+  --signal-soft: rgba(47, 211, 152, 0.14);
+  --coral: #ff6b6b;
+  --coral-soft: rgba(255, 107, 107, 0.14);
+
+  --ivory: #f4f2ec;
+  --slate: #8a93ab;
+  --slate-dim: #5b6480;
+
+  --font-display: "Urbanist", "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 24px 60px -24px rgba(0, 0, 0, 0.65);
+  --shadow-soft: 0 12px 30px -18px rgba(0, 0, 0, 0.55);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--ivory);
+  font-family: var(--font-display);
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(1100px 600px at 85% -10%, rgba(203, 163, 92, 0.08), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgba(47, 211, 152, 0.05), transparent 60%);
+  background-attachment: fixed;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--brass);
+  color: var(--ink);
+}
+
+/* visible keyboard focus everywhere, per accessibility floor */
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: var(--panel-3);
+  border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

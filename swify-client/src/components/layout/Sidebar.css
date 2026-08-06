@@ -1,0 +1,123 @@
+.sidebar {
+  width: 244px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding: 26px 18px;
+  border-right: 1px solid var(--hairline);
+  background: linear-gradient(180deg, var(--ink-2), var(--ink));
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+}
+
+.sidebar__mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, var(--brass-soft), var(--brass));
+  color: #241a08;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+
+.sidebar__wordmark {
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.01em;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--slate);
+  font-weight: 600;
+  font-size: 0.92rem;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sidebar__link:hover {
+  color: var(--ivory);
+  background: var(--panel-2);
+}
+
+.sidebar__link.is-active {
+  color: var(--brass-soft);
+  background: var(--panel-2);
+}
+
+.sidebar__footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  border: 1px solid var(--hairline);
+}
+
+.sidebar__user {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar__user-name {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.sidebar__user-id {
+  font-size: 0.76rem;
+  color: var(--slate);
+}
+
+.sidebar__logout {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: var(--coral);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 6px 2px;
+}
+
+.sidebar__logout:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    z-index: 40;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    box-shadow: var(--shadow-card);
+  }
+  .sidebar.is-open {
+    transform: translateX(0);
+  }
+}

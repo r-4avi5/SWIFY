@@ -1,0 +1,28 @@
+.loader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--slate);
+  font-size: 0.85rem;
+  padding: 24px;
+}
+
+.loader--full {
+  min-height: 100vh;
+  width: 100%;
+  justify-content: center;
+  background: var(--ink);
+}
+
+.loader__ring {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--panel-3);
+  border-top-color: var(--brass);
+  animation: loader-spin 0.8s linear infinite;
+}
+
+@keyframes loader-spin {
+  to { transform: rotate(360deg); }
+}
