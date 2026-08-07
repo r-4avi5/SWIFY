@@ -6,7 +6,7 @@ import {
   markAllNotificationAsRead,
   deleteNotification,
 } from "../api/notification.api";
-import { getSocket } from "../lib/socket";
+import { getSocket } from "../config/socket";
 import { SOCKET_EVENTS } from "../constants/socket.events";
 import { useAuth } from "./AuthContext";
 

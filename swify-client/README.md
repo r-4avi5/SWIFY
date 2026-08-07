@@ -1,8 +1,6 @@
 # Swify — client
 
-React + Vite frontend for the `swify-server` backend (Express/MongoDB UPI-style
-wallet API). Built with React Router, GSAP, Framer Motion, and lucide-react —
-matching the dependencies already declared in the backend's `package.json`.
+React + Vite + Tailwind CSS frontend for the `swify-server` backend.
 
 ## Setup
 
@@ -11,72 +9,47 @@ npm install
 npm run dev
 ```
 
-By default the app talks to `http://localhost:3000`. Change
-`VITE_API_BASE_URL` in `.env` if your backend runs elsewhere.
-
-Your backend's CORS setup must allow credentials and the client's origin
-specifically (not `*`), since every request is sent with
-`withCredentials: true` — the auth cookie won't work otherwise.
+Set `VITE_API_BASE_URL` in `.env` if your backend isn't at `http://localhost:3000`.
 
 ## Structure
 
-File names mirror the backend's `routes/` and `constants/` folders:
+Flat, one file per concern — same style as the backend's `controllers/`,
+`routes/`, `services/` folders (no nested per-feature subfolders):
 
 ```
 src/
-  api/                     one file per backend route group
-    auth.api.js            -> routes/auth.routes.js
-    user.api.js             -> routes/user.routes.js
-    wallet.api.js            -> routes/wallet.route.js
-    transaction.api.js       -> routes/transaction.routes.js
-    transfer.api.js          -> routes/transfer.routes.js
-    mpin.api.js               -> routes/mpin.routes.js
-    kyc.api.js                 -> routes/kyc.routes.js
-    notification.api.js        -> routes/notification.routes.js
-    paymentIdentity.api.js      -> routes/paymentIdentity.routes.js
-  constants/
-    notification.types.js  -> mirrors backend constants/notification.types.js
-    socket.events.js       -> mirrors backend constants/socket.events.js
-  context/                  AuthContext (session) + NotificationContext (socket.io)
-  lib/                       axios instance, socket.io client, formatters
-  components/
-    layout/                  Sidebar, Topbar, AppShell, ProtectedRoute
-    wallet/                   WalletCard (signature tilt/foil card), ReceiveModal
-    transactions/              TransactionRow (ledger-style list item)
-    mpin/                       MpinPad, MpinModal (payment confirmation gate)
-    notifications/               NotificationBell (dropdown)
-    common/                       Button, Field, StatusBadge, EmptyState, Loader
-  pages/
-    auth/                    Login, Register
-    dashboard/                Dashboard (wallet overview)
-    transfer/                  Transfer (send-money flow: recipient -> amount -> MPIN -> done)
-    transactions/                TransactionHistory, TransactionDetail
-    kyc/                           Kyc (Aadhaar/PAN submission)
-    mpin/                           Mpin (create/change flow)
-    notifications/                   Notifications (full page)
-    profile/                          Profile (identity + own QR)
+  api/            one file per backend route group (auth, wallet, transfer, mpin, kyc, ...)
+  config/         axios instance + socket.io client (mirrors backend's config/db.js)
+  constants/      notification.types.js, socket.events.js — mirror backend's constants/ exactly
+  context/        AuthContext, NotificationContext
+  utils/          formatters (mirrors backend's utils/)
+  components/     Sidebar, Topbar, WalletCard, MpinPad, MpinModal, Button, Field, etc. — all flat
+  pages/          Login, Register, Dashboard, Transfer, TransactionHistory, TransactionDetail,
+                  Kyc, Mpin, Notifications, Profile — one file per page, all flat
+  App.jsx         routes
+  main.jsx        entry point
+  index.css       Tailwind import + design tokens (@theme block)
 ```
 
-## Design
+## Styling
 
-Dark "vault" theme: deep navy panels with a brass-foil accent (evoking a
-premium payment card), Urbanist for display type, JetBrains Mono for money
-figures, reference codes, and swifyIds — the way a real bank statement
-distinguishes prose from numbers. The `WalletCard` component is the signature
-piece: a GSAP-driven, pointer-tilted card with a slot-counter balance
-animation.
+Tailwind CSS v4 (via `@tailwindcss/vite`, no separate config file needed —
+tokens live in `src/index.css`'s `@theme` block). Custom design tokens:
 
-## A few backend issues found while wiring this up
+- `bg-ink`, `bg-panel`, `bg-panel-2`, `bg-panel-3` — the dark "vault" surfaces
+- `text-brass`, `text-brass-soft`, `bg-brass` — the foil-card accent
+- `text-signal` / `text-coral` — credit (money in) / debit (money out)
+- `font-mono` — JetBrains Mono, used for balances, reference codes, swifyIds
+- `font-display` (default body font) — Urbanist
 
-These live in `swify-server` and are worth a look:
+GSAP still drives the `WalletCard`'s pointer-tilt/foil-shine and balance
+counter; Framer Motion still handles page/modal transitions. Both are
+independent of the styling layer, so switching to Tailwind didn't touch
+that logic.
 
-- `admin.routes.js` imports `approveKYC` but calls an undefined `reviewKYC`.
-- `transferMoney` (transfer controller) calls an undefined `transferService`
-  — it likely should call `transferMoneyService`.
-- `transferByQRService` also calls the undefined `transferService`.
-- `scanQRService` references `receiver` before it's assigned.
-- There's no `GET` endpoint to fetch a user's own KYC status after
-  submission, so the KYC page here can only show the status returned by the
-  submit call itself, not on a later visit.
-- Registration doesn't set the login cookie, so the frontend routes users to
-  `/login` after signup rather than logging them in directly.
+## Connecting to the backend
+
+Same as before — your backend's CORS must allow credentials from this app's
+origin specifically (not `*`), since auth is an httpOnly cookie. See the
+`swify-server` README/notes for the two-line CORS fix if you haven't
+applied it yet.

@@ -1,4 +1,4 @@
-import api from "../lib/axios";
+import api from "../config/axios";
 
 // Mirrors swify-server/src/routes/mpin.routes.js
 export const createMpin = (mpin) => api.post("/api/mpin/create", { mpin });

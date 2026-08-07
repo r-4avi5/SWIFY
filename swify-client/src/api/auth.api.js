@@ -1,4 +1,4 @@
-import api from "../lib/axios";
+import api from "../config/axios";
 
 // Mirrors swify-server/src/routes/auth.routes.js
 export const registerUser = (payload) => api.post("/api/auth/register", payload);

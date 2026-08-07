@@ -1,4 +1,4 @@
-import api from "../lib/axios";
+import api from "../config/axios";
 
 // Mirrors swify-server/src/routes/wallet.route.js
 export const getWallet = () => api.get("/api/wallet");

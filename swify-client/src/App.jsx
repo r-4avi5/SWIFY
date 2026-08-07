@@ -1,19 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { NotificationProvider } from "./context/NotificationContext";
-import AppShell from "./components/layout/AppShell";
-import ProtectedRoute from "./components/layout/ProtectedRoute";
+import AppShell from "./components/AppShell";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
-import Dashboard from "./pages/dashboard/Dashboard";
-import Transfer from "./pages/transfer/Transfer";
-import TransactionHistory from "./pages/transactions/TransactionHistory";
-import TransactionDetail from "./pages/transactions/TransactionDetail";
-import Kyc from "./pages/kyc/Kyc";
-import Mpin from "./pages/mpin/Mpin";
-import Notifications from "./pages/notifications/Notifications";
-import Profile from "./pages/profile/Profile";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
+import Transfer from "./pages/Transfer";
+import TransactionHistory from "./pages/TransactionHistory";
+import TransactionDetail from "./pages/TransactionDetail";
+import Kyc from "./pages/Kyc";
+import Mpin from "./pages/Mpin";
+import Notifications from "./pages/Notifications";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (

@@ -1,4 +1,4 @@
-import api from "../lib/axios";
+import api from "../config/axios";
 
 // Mirrors swify-server/src/routes/transaction.routes.js
 export const getTransactionHistory = (page = 1, limit = 20) =>

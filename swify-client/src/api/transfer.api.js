@@ -1,4 +1,4 @@
-import api from "../lib/axios";
+import api from "../config/axios";
 
 // Mirrors swify-server/src/routes/transfer.routes.js
 // Every money-movement call must carry the short-lived payment token that

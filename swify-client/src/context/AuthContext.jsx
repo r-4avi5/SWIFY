@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { loginUser, registerUser } from "../api/auth.api";
 import { getProfile } from "../api/user.api";
-import { connectSocket, disconnectSocket } from "../lib/socket";
+import { connectSocket, disconnectSocket } from "../config/socket";
 
 const AuthContext = createContext(null);
 

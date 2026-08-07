@@ -1,4 +1,4 @@
-import api from "../lib/axios";
+import api from "../config/axios";
 
 // Mirrors swify-server/src/routes/notification.routes.js
 export const getNotifications = (page = 1, limit = 20) =>

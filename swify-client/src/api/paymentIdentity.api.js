@@ -1,4 +1,4 @@
-import api from "../lib/axios";
+import api from "../config/axios";
 
 // Mirrors swify-server/src/routes/paymentIdentity.routes.js
 // identifier can be a swifyId or a payAddress - the backend resolves either.
