@@ -1,8 +1,38 @@
 import { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
  
-// Point this at your actual API base URL
-const API_BASE_URL = "/api";
+// Point this at your actual API base URL.
+// If your frontend and backend run on different ports (e.g. Vite on 5173,
+// Express on 3000), a relative "/api" will NOT reach your backend — it'll
+// hit the frontend dev server instead and return HTML, which is what causes
+// "Unexpected token < in JSON" / "Unexpected end of JSON input" errors.
+// Set this to your backend's actual URL, e.g. "http://localhost:3000/api"
+const API_BASE_URL = "http://localhost:3000/api";
+ 
+// Checks the freshly-registered user's onboarding progress and returns
+// wherever they should land next: KYC (if not yet submitted/verified),
+// MPIN setup (if not set), or Home if both are done.
+async function resolveNextRoute() {
+  try {
+    const [profileRes, kycRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/user/profile`, { credentials: "include" }).then((r) => r.json()),
+      fetch(`${API_BASE_URL}/kyc/status`, { credentials: "include" }).then((r) => r.json()),
+    ]);
+ 
+    const kycStatus = kycRes?.data?.status;
+    const isMpinSet = profileRes?.data?.isMpinSet;
+ 
+    if (kycStatus === "PENDING" || kycStatus === "NOT_SUBMITTED" || kycStatus === "REJECTED") {
+      return "/kyc";
+    }
+    if (!isMpinSet) {
+      return "/mpin-setup";
+    }
+    return "/home";
+  } catch {
+    return "/kyc"; // safest default right after registration
+  }
+}
  
 export default function SwifySignup() {
   const navigate = useNavigate();
@@ -69,7 +99,19 @@ export default function SwifySignup() {
         }),
       });
  
-      const data = await res.json();
+      // Read the raw text first — if the server ever returns HTML (e.g. a
+      // 404 page, a proxy error page, or an unhandled crash), res.json()
+      // would throw a confusing "Unexpected token" error. Reading as text
+      // first lets us give a clear message instead of a JSON parse crash.
+      const rawText = await res.text();
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error(
+          "Server didn't return valid JSON. Check that the backend is running and API_BASE_URL is correct."
+        );
+      }
  
       if (!res.ok || !data.success) {
         // Backend throws things like "Swify ID already exists",
@@ -77,7 +119,9 @@ export default function SwifySignup() {
         throw new Error(data.message || "Something went wrong. Please try again.");
       }
  
-      navigate("/login");
+      // Registration succeeded — route to whichever onboarding step
+      // (KYC or MPIN) is still incomplete.
+      navigate(await resolveNextRoute());
     } catch (err) {
       setErrorMsg(err.message);
     } finally {
@@ -268,7 +312,7 @@ export default function SwifySignup() {
         </button>
         <p className="text-center text-base text-gray-400">
           Already have an account?{" "}
-          <Link to="/kycsubmit" className="text-white font-semibold underline">
+          <Link to="/login" className="text-white font-semibold underline">
             Log in
           </Link>
         </p>

@@ -1,8 +1,7 @@
 import { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
  
-// Point this at your actual API base URL
-const API_BASE_URL = "/api";
  
 const AADHAAR_REGEX = /^\d{12}$/;
 const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
@@ -57,10 +56,41 @@ export default function SwifyKYC() {
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
  
-  const readAsBase64 = (file, setter) => {
+  // Resizes and compresses an image via canvas before base64-encoding it,
+  // so four full-resolution phone photos don't blow past the request size
+  // limit (or worse, get silently dropped mid-upload).
+  const compressAndReadAsBase64 = (file, setter) => {
     if (!file || !file.type.startsWith("image/")) return;
+ 
+    const img = new Image();
     const reader = new FileReader();
-    reader.onload = () => setter(reader.result);
+ 
+    reader.onload = () => {
+      img.onload = () => {
+        const MAX_DIMENSION = 1280;
+        let { width, height } = img;
+ 
+        if (width > height && width > MAX_DIMENSION) {
+          height = Math.round((height * MAX_DIMENSION) / width);
+          width = MAX_DIMENSION;
+        } else if (height > MAX_DIMENSION) {
+          width = Math.round((width * MAX_DIMENSION) / height);
+          height = MAX_DIMENSION;
+        }
+ 
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, width, height);
+ 
+        // JPEG at 0.75 quality keeps ID photos legible while cutting
+        // file size dramatically compared to raw camera output.
+        setter(canvas.toDataURL("image/jpeg", 0.75));
+      };
+      img.src = reader.result;
+    };
+ 
     reader.readAsDataURL(file);
   };
  
@@ -87,15 +117,9 @@ export default function SwifyKYC() {
         headers: { "Content-Type": "application/json" },
         credentials: "include", // sends the httpOnly auth cookie set at login
         body: JSON.stringify({
-          // Sent under both spellings since the backend's validation
-          // (aadhaarX) and service (aadharX) currently disagree —
-          // safe to trim once that's fixed on the backend.
-          aadhaarNumber,
           aadharNumber: aadhaarNumber,
           panNumber: panNumber.toUpperCase(),
-          aadhaarFront: aadharFront,
           aadharFront,
-          aadhaarBack: aadharBack,
           aadharBack,
           panCard,
           selfie,
@@ -108,7 +132,10 @@ export default function SwifyKYC() {
         throw new Error(data.message || "Something went wrong. Please try again.");
       }
  
-      navigate("/kyc-pending");
+      // KYC submitted (now UNDER_REVIEW) — MPIN setup is the next
+      // actionable onboarding step. A dedicated "pending review" screen
+      // can replace this once built.
+      navigate("/mpin-setup");
     } catch (err) {
       setErrorMsg(err.message);
     } finally {
@@ -168,22 +195,22 @@ export default function SwifyKYC() {
         <DocUploadTile
           label="Aadhaar — front"
           preview={aadharFront}
-          onChange={(e) => readAsBase64(e.target.files?.[0], setAadharFront)}
+          onChange={(e) => compressAndReadAsBase64(e.target.files?.[0], setAadharFront)}
         />
         <DocUploadTile
           label="Aadhaar — back"
           preview={aadharBack}
-          onChange={(e) => readAsBase64(e.target.files?.[0], setAadharBack)}
+          onChange={(e) => compressAndReadAsBase64(e.target.files?.[0], setAadharBack)}
         />
         <DocUploadTile
           label="PAN card"
           preview={panCard}
-          onChange={(e) => readAsBase64(e.target.files?.[0], setPanCard)}
+          onChange={(e) => compressAndReadAsBase64(e.target.files?.[0], setPanCard)}
         />
         <DocUploadTile
           label="Selfie"
           preview={selfie}
-          onChange={(e) => readAsBase64(e.target.files?.[0], setSelfie)}
+          onChange={(e) => compressAndReadAsBase64(e.target.files?.[0], setSelfie)}
         />
       </div>
  
