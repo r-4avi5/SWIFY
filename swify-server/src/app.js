@@ -17,8 +17,8 @@ import notificationRoutes from "./routes/notification.routes.js";
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
@@ -41,6 +41,18 @@ app.use("/api/kyc",kycRoutes);
 app.use("/api/transfer", transferRoutes);
 app.use("/api/mpin",mpinRoutes);
 app.use("/api/notifications",notificationRoutes);
+
+app.use((err, req, res, next) => {
+  console.error(err.stack || err);
+  const status = err.status || err.statusCode || 500;
+  res.status(status).json({
+    success: false,
+    message:
+      err.type === "entity.too.large"
+        ? "Upload too large. Please use smaller images."
+        : err.message || "Something went wrong on the server.",
+  });
+});
 
 
 export default app;

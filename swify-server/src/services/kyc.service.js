@@ -18,11 +18,11 @@ export const submitKYCService = async(userId,data) =>{
         throw new Error ("Your KYC is already verified");
     }
 
-    kyc.aadharNumber = data.aadharNumber,
+    kyc.aadhaarNumber = data.aadhaarNumber,
     kyc.panNumber = data.panNumber,
     kyc.documents ={
-        aadharFront: data.aadharFront,
-        aadharBack: data.aadharBack,
+        aadhaarFront: data.aadharFront,
+        aadhaarBack: data.aadhaarBack,
         panCard: data.panCard,
         selfie: data.selfie,
     };
