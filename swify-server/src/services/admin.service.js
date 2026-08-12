@@ -1,11 +1,11 @@
 import mongoose, { startSession } from "mongoose";
 
-import User from "../models/user.model";
-import Wallet from "../models/wallet.model";
-import KYC from "../models/kyc.model";
+import User from "../models/user.model.js";
+import Wallet from "../models/wallet.model.js";
+import KYC from "../models/kyc.model.js";
 
-import { generatePayAddress } from "./payAddress.service";
-import { generateQRCode } from "../utils/generateQRCode";
+import { generatePayAddress } from "./payAddress.service.js";
+import { generateQRCode } from "../utils/generateQRCode.js";
 import { sendKycApprovedNotification,sendKycRejectedNotification } from "./notification.service.js";
 
 export const reviewKYCService = async (userId, data) => {

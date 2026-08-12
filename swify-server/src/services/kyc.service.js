@@ -18,11 +18,11 @@ export const submitKYCService = async(userId,data) =>{
         throw new Error ("Your KYC is already verified");
     }
 
-    kyc.aadhaarNumber = data.aadhaarNumber,
-    kyc.panNumber = data.panNumber,
+    kyc.aadharNumber = data.aadharNumber;
+    kyc.panNumber = data.panNumber;
     kyc.documents ={
-        aadhaarFront: data.aadharFront,
-        aadhaarBack: data.aadhaarBack,
+        aadharFront: data.aadharFront,
+        aadharBack: data.aadharBack,
         panCard: data.panCard,
         selfie: data.selfie,
     };
@@ -35,4 +35,18 @@ export const submitKYCService = async(userId,data) =>{
     });
 
     return kyc;
+};
+
+export const getKycStatusService = async (userId) => {
+    const kyc = await KYC.findOne({ user: userId });
+
+    if (!kyc) {
+        return { status: "NOT_SUBMITTED" };
+    }
+
+    return {
+        status: kyc.status,
+        rejectionReason: kyc.rejectionReason || null,
+        verifiedAt: kyc.verifiedAt || null,
+    };
 };

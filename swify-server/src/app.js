@@ -13,6 +13,7 @@ import kycRoutes from "./routes/kyc.routes.js";
 import transferRoutes from "./routes/transfer.routes.js";
 import mpinRoutes from "./routes/mpin.routes.js";
 import notificationRoutes from "./routes/notification.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 
 const app = express();
@@ -41,6 +42,7 @@ app.use("/api/kyc",kycRoutes);
 app.use("/api/transfer", transferRoutes);
 app.use("/api/mpin",mpinRoutes);
 app.use("/api/notifications",notificationRoutes);
+app.use("/api/admin",adminRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack || err);

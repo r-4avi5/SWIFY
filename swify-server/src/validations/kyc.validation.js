@@ -1,16 +1,16 @@
 export const validateKYCData = (data) =>{
     const{
-        aadhaarNumber,
+        aadharNumber,
         panNumber,
-        aadhaarFront,
-        aadhaarBack,
+        aadharFront,
+        aadharBack,
         panCard,
         selfie,
     } = data;
     if (
-        !aadhaarNumber|| !panNumber || !aadhaarFront || !aadhaarBack || !panCard || !selfie
+        !aadharNumber|| !panNumber || !aadharFront || !aadharBack || !panCard || !selfie
     ) {throw new Error("All KYC fields are required.");
-     }  if (!/^\d{12}$/.test(aadhaarNumber)) {
+     }  if (!/^\d{12}$/.test(aadharNumber)) {
         throw new Error("Invalid Aadhaar number.");
     }
     if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panNumber.toUpperCase())) {

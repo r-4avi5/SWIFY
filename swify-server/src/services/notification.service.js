@@ -5,7 +5,9 @@ import { NOTIFICATION_TYPES } from "../constants/notification.types.js";
 export const createNotification = async({receiver,title,message,type,metadata={},}) =>{
     
     const notification = await Notification.create({receiver,title,message,type,metadata});
-    emitNotification(receiver,notification);
+    emitNotification(receiver,notification).catch((err) =>
+        console.error("emitNotification failed:", err.message)
+    );
     return notification;
 };
 

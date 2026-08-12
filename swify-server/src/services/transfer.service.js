@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import Wallet from "../models/wallet.model.js";
 import Transaction from "../models/transaction.model.js";
+import KYC from "../models/kyc.model.js";
 
 import {resolveUser} from "./paymentIdentity.service.js";
 import {validateTransferData} from "../validations/payment.validation.js";
@@ -64,6 +65,7 @@ export const transferMoneyService = async (senderId, transferData,paymentToken) 
                 },
                 amount,
                 paymentMethod: "PAY_ADDRESS",
+                 type: "transfer",
                 status: "success",
                 note,
             },
@@ -113,6 +115,7 @@ export const transferByQRService = async (
         amount,
         note,
         idempotencyKey,
+        paymentToken,
     } = data;
 
     if (!qrData) {
@@ -122,29 +125,24 @@ export const transferByQRService = async (
     let payload;
 
     try {
-
         payload = JSON.parse(qrData);
-
     } catch {
-
         throw new Error("Invalid QR Code.");
-
     }
 
     if (!payload.payAddress) {
-
         throw new Error("Invalid QR payload.");
-
     }
 
-    return await transferService(
+    return await transferMoneyService(
         senderId,
         {
-            identifier: payload.payAddress,
+            receiver: payload.payAddress,
             amount,
             note,
             idempotencyKey,
-        }
+        },
+        paymentToken
     );
 
 };
@@ -152,7 +150,6 @@ export const transferByQRService = async (
 export const scanQRService = async (data) => {
 
     const { qrData } = data;
-    const kyc = await KYC.findOne({ user: receiver._id });
 
     if (!qrData) {
         throw new Error("QR data is required.");
@@ -161,13 +158,9 @@ export const scanQRService = async (data) => {
     let payload;
 
     try {
-
         payload = JSON.parse(qrData);
-
     } catch {
-
         throw new Error("Invalid QR Code.");
-
     }
 
     if (!payload.payAddress) {
@@ -182,18 +175,16 @@ export const scanQRService = async (data) => {
         throw new Error("Receiver not found.");
     }
 
+    const kyc = await KYC.findOne({ user: receiver._id });
+
     if (!kyc || kyc.status !== "VERIFIED") {
-    throw new Error("Receiver is not eligible to receive payments.");
+        throw new Error("Receiver is not eligible to receive payments.");
     }
 
     return {
-
         displayName: receiver.displayName,
-
         payAddress: receiver.payAddress,
-
         avatar: receiver.avatar,
-
     };
 
 };

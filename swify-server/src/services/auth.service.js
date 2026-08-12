@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 import { validateRegisterData,validateLoginData } from "../validations/auth.validation.js";
 import Wallet from "../models/wallet.model.js";
+import KYC from "../models/kyc.model.js";
 
 export const registerUserService = async (userData) => {
     validateRegisterData(userData);
@@ -36,8 +37,11 @@ export const registerUserService = async (userData) => {
 
      const user = await User.create(userData);
      await Wallet.create(
-        { user: user._id }
+        { user: user._id,status: "suspended" }
     );
+    await KYC.create(
+            { user: user._id }
+     );
 
     const userObject = user.toObject();
     delete userObject.password;

@@ -1,4 +1,4 @@
-import {resolveUser} from "../services/paymentIdentity.service.js";
+import {resolveUser,getUserKycStatus} from "../services/paymentIdentity.service.js";
 
 export const resolvePaymentUser = async (req, res) => {
     try {

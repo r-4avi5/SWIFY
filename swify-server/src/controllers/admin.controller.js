@@ -4,7 +4,7 @@ export const reviewKYC = async(req,res) =>{
 
     try{
         const result = await reviewKYCService(
-            userId,
+            req.params.userId,
             req.body,
         );
 

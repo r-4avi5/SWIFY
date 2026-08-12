@@ -8,7 +8,7 @@ export const transferMoney = async (req, res) => {
 
     try {
         const paymentToken = req.headers["x-payment-authorisation"]
-        const result = await transferService(
+        const result = await transferMoneyService(
             req.user._id,
             req.body,
             paymentToken
@@ -37,7 +37,7 @@ export const transferByQR = async (req, res) => {
 
         const result = await transferByQRService(
             req.user._id,
-            req.body
+            { ...req.body, paymentToken }
         );
 
         return res.status(200).json({

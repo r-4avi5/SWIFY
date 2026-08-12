@@ -6,7 +6,7 @@ export const generatePaymentAuthorisation = async(userId) => {
 
     const token = crypto.randomBytes(32).toString("hex");
 
-    const expiresAt = new Date( Date(now) + 60 * 1000 );
+    const expiresAt = new Date( Date.now() + 60 * 1000 );
     await PaymentAuthorisation.create({
         user:userId,
         token,
