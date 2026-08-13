@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
  
 import { API_BASE_URL } from "./config";
@@ -17,6 +17,7 @@ import Transactions from "./pages/Transactions";
 import TransactionDetail from "./pages/TransactionDetail";
 import Notifications from "./pages/Notifications";
 import Profile from "./pages/Profile";
+import AdminKycReview from "./pages/AdminKycReview";
  
 /**
  * Guards routes that require a logged-in user. Checks the real session
@@ -73,6 +74,7 @@ export default function App() {
         <Route path="/notifications" element={<RequireAuth><Notifications /></RequireAuth>} />
         <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
         <Route path="/security/mpin" element={<RequireAuth><MpinChange /></RequireAuth>} />
+        <Route path="/admin/kyc" element={<RequireAuth><AdminKycReview /></RequireAuth>} />
  
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

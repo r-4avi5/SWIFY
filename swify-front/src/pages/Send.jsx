@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { ArrowLeft, Check, X, ChevronRight, Pencil, Delete } from "lucide-react";
+import { API_BASE_URL } from "../config";
  
-const API_BASE_URL = "http://localhost:3000/api";
 const PIN_LENGTH = 6;
  
 async function safeFetchJson(url, options) {

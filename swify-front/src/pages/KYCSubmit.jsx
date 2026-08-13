@@ -126,7 +126,15 @@ export default function SwifyKYC() {
         }),
       });
  
-      const data = await res.json();
+      const rawText = await res.text();
+      let data;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error(
+          "Server didn't return valid JSON. Check that the backend is running."
+        );
+      }
  
       if (!res.ok || !data.success) {
         throw new Error(data.message || "Something went wrong. Please try again.");

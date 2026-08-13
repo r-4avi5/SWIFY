@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowUpRight, ArrowDownLeft, Search, X } from "lucide-react";
+import { API_BASE_URL } from "../config";
  
-const API_BASE_URL = "http://localhost:3000/api";
 const PAGE_SIZE = 20;
  
 async function safeFetchJson(url, options) {

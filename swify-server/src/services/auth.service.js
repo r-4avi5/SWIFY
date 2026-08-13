@@ -37,18 +37,27 @@ export const registerUserService = async (userData) => {
 
      const user = await User.create(userData);
      await Wallet.create(
-        { user: user._id,status: "suspended" }
+        { user: user._id, status: "suspended" } // activated on KYC approval
     );
-    await KYC.create(
-            { user: user._id }
-     );
+     await KYC.create(
+        { user: user._id }
+    ); // required — submitKYCService throws "KYC record not found" without this
 
     const userObject = user.toObject();
     delete userObject.password;
 
-    return userObject;
+    // Auto-login right after registration — matches loginUserService's
+    // shape so the controller can set the same auth cookie either way.
+    const token = jwt.sign(
+        { id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+    );
 
-    return user;
+    return {
+        user: userObject,
+        token,
+    };
 };
 
 export const loginUserService = async (loginData) => {
@@ -66,7 +75,7 @@ export const loginUserService = async (loginData) => {
     const token = jwt.sign(
         { id: user._id,}, 
         process.env.JWT_SECRET, 
-        { expiresIn: "1h" });
+        { expiresIn: "7d" });
 
     const userObject = user.toObject();
     delete userObject.password;

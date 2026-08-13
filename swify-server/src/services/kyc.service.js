@@ -20,7 +20,7 @@ export const submitKYCService = async(userId,data) =>{
 
     kyc.aadharNumber = data.aadharNumber;
     kyc.panNumber = data.panNumber;
-    kyc.documents ={
+    kyc.documents = {
         aadharFront: data.aadharFront,
         aadharBack: data.aadharBack,
         panCard: data.panCard,
@@ -30,9 +30,7 @@ export const submitKYCService = async(userId,data) =>{
     kyc.status = "UNDER_REVIEW";
     await kyc.save();
 
-    await sendKycSubmittedNotification({
-    receiver: userId,
-    });
+    await sendKycSubmittedNotification(userId);
 
     return kyc;
 };
@@ -41,6 +39,9 @@ export const getKycStatusService = async (userId) => {
     const kyc = await KYC.findOne({ user: userId });
 
     if (!kyc) {
+        // Should not happen for any account created after the fix that
+        // auto-creates a KYC record at registration, but handled
+        // defensively for any pre-existing accounts.
         return { status: "NOT_SUBMITTED" };
     }
 

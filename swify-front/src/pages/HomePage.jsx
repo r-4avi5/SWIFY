@@ -17,8 +17,8 @@ import {
   CreditCard,
   User as UserIcon,
 } from "lucide-react";
+import { API_BASE_URL } from "../config";
  
-const API_BASE_URL = "http://localhost:3000/api";
  
 async function safeFetchJson(url, options) {
   const res = await fetch(url, { credentials: "include", ...options });
@@ -79,20 +79,23 @@ export default function SwifyHome() {
   const [balanceHidden, setBalanceHidden] = useState(false);
   const [kycBannerDismissed, setKycBannerDismissed] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [kycStatus, setKycStatus] = useState(null);
  
   useEffect(() => {
     (async () => {
       try {
-        const [profileRes, walletRes, txnRes, unreadRes] = await Promise.all([
+        const [profileRes, walletRes, txnRes, unreadRes, kycRes] = await Promise.all([
           safeFetchJson(`${API_BASE_URL}/user/profile`),
           safeFetchJson(`${API_BASE_URL}/wallet`),
           safeFetchJson(`${API_BASE_URL}/transactions?limit=20`),
           safeFetchJson(`${API_BASE_URL}/notifications/unread-count`),
+          safeFetchJson(`${API_BASE_URL}/kyc/status`),
         ]);
         setProfile(profileRes.data);
         setWallet(walletRes.data);
         setTransactions(txnRes.transactions || txnRes.data || []);
         setUnreadCount(unreadRes.data?.unreadCount || 0);
+        setKycStatus(kycRes.data?.status || null);
       } catch (err) {
         setErrorMsg(err.message);
       } finally {
@@ -147,8 +150,12 @@ export default function SwifyHome() {
     return groups;
   }, [transactions]);
  
-  const kycVerified = profile?.kycStatus === "VERIFIED";
-  const showKycBanner = !kycVerified && !kycBannerDismissed;
+  const kycVerified = kycStatus === "VERIFIED";
+  const kycUnderReview = kycStatus === "UNDER_REVIEW";
+  // Only nag the user when there's something actionable: they haven't
+  // submitted yet, or a submission was rejected and needs resubmitting.
+  // Once submitted and awaiting review, or already verified, stay quiet.
+  const showKycBanner = !kycVerified && !kycUnderReview && !kycBannerDismissed;
  
   const initials = initialsOf(profile?.displayName || profile?.fullName);
  
@@ -283,9 +290,9 @@ export default function SwifyHome() {
               </button>
             </div>
             <p className="text-gray-400 text-sm mt-3 leading-relaxed">
-              {profile?.kycStatus === "REJECTED"
+              {kycStatus === "REJECTED"
                 ? "Your last submission was rejected. Please resubmit your documents."
-                : profile?.kycStatus === "UNDER_REVIEW"
+                : kycStatus === "UNDER_REVIEW"
                 ? "Your documents are under review. Sending and top-ups unlock once approved."
                 : "Complete identity verification. Sending and top-ups unlock once approved."}
             </p>

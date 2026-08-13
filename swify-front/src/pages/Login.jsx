@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
  
-const API_BASE_URL = "http://localhost:3000/api";
  
 // Checks the freshly-authenticated user's onboarding progress and returns
 // wherever they should land next: KYC (if not yet submitted/verified),

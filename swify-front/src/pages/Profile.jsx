@@ -11,8 +11,8 @@ import {
   LogOut,
   QrCode,
 } from "lucide-react";
+import { API_BASE_URL } from "../config";
  
-const API_BASE_URL = "http://localhost:3000/api";
  
 async function safeFetchJson(url, options) {
   const res = await fetch(url, { credentials: "include", ...options });

@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { API_BASE_URL } from "../config";
  
 // Point this at your actual API base URL.
 // If your frontend and backend run on different ports (e.g. Vite on 5173,
@@ -7,7 +8,6 @@ import { useNavigate, Link } from "react-router-dom";
 // hit the frontend dev server instead and return HTML, which is what causes
 // "Unexpected token < in JSON" / "Unexpected end of JSON input" errors.
 // Set this to your backend's actual URL, e.g. "http://localhost:3000/api"
-const API_BASE_URL = "http://localhost:3000/api";
  
 // Checks the freshly-registered user's onboarding progress and returns
 // wherever they should land next: KYC (if not yet submitted/verified),

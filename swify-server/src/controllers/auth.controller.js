@@ -3,7 +3,15 @@ import {loginUserService} from "../services/auth.service.js";
 
 export const registerUser = async (req, res) => {
     try {
-        const user = await registerUserService(req.body);
+        const { user, token } = await registerUserService(req.body);
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
         res.status(201).json({
             success: true,
             message: "User registered successfully",

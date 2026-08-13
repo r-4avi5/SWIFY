@@ -21,9 +21,7 @@ export const createMpinService = async (userId,data) => {
     user.isMpinSet = true;
     await user.save();
 
-    await sendMpinCreatedNotification({
-    receiver: user._id,
-    });
+    await sendMpinCreatedNotification(user._id);
 
     return {
         message:"MPIN created successfully."
@@ -93,9 +91,7 @@ export const changeMpinService = async (userId,data) => {
     user.mpin = hashedNewMpin;
     await user.save();
 
-    await sendMpinChangedNotification({
-    receiver: user._id,
-    });
+    await sendMpinChangedNotification(user._id);
 
     return {
         message:"MPIN changed successfully."
